@@ -3,7 +3,7 @@
 ### Description
 _Game in which the player shoots cannonballs at a moving target to score points._
 
-### Languages/Technologies/Tools Used
+### Languages Used
 - Python
   
 ### Demo
