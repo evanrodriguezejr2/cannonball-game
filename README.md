@@ -1,7 +1,7 @@
 # cannonball_game
 
 ### Description
-Game in which you shoot cannonballs at a moving target to score points.
+Game in which the player shoots cannonballs at a moving target to score points.
 
 ### Languages/Technologies/Tools Used
 - Python
