@@ -14,7 +14,7 @@ class CannonballGame:
 		# window
 		self.background_color = "black"
 		self.foreground_color = "white"
-		self.win = GraphWin("Target Practice", 1300, 800)
+		self.win = GraphWin("Cannonball Game", 1300, 800)
 		self.win.setBackground(self.background_color)
 		self.win.setCoords(-15,-10,115,70)
 
