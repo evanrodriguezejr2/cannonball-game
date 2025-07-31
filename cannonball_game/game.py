@@ -2,7 +2,7 @@ from utils.graphics import *
 from math import cos, sin, radians, sqrt
 from random import randrange
 from time import time
-from utils.buttons import Button
+from utils.buttons import RectangularButton
 
 def main():
 	game = CannonballGame()
@@ -19,18 +19,10 @@ class CannonballGame:
 		self.win.setCoords(-15,-10,115,70)
 
 		# grid
-		self._createGrid(length=105, height=55, tick_interval=10, tick_size=4, color=self.foreground_color)
+		self.grid = Grid(self.win, origin=Point(0,0), length=105, height=55, tick_interval=10, tick_size=4, color=self.foreground_color)
 
 		# instructions
-		self.instructions = [
-			Text(Point(100,65), "\u2190 \u2192  Control Power"), 
-			Text(Point(100,62), "\u2191 \u2193 Control Angle"),
-			Text(Point(100,59), "Press 'F' to Fire"),]
-
-		for inst in self.instructions:
-			inst.setSize(16)
-			inst.setTextColor(self.foreground_color)
-			inst.draw(self.win)
+		self._createInstructions()
 
 		# launch arrow
 		self.arrow = LaunchArrow(self.win, magnitude=20, color=self.foreground_color)
@@ -61,6 +53,9 @@ class CannonballGame:
 		self.prompt.setSize(20)
 		self.prompt.setTextColor(self.foreground_color)
 		self.prompt.draw(self.win)
+
+		# legend
+		self._createLegend()
 
 		# outcome of game
 		self.outcome = Text(Point(50,40), "")
@@ -117,6 +112,43 @@ class CannonballGame:
 		self._resetGame()
 		self.play()
 
+	def _createInstructions(self):
+		s1 = "\u2190 \u2192  Control Power"
+		s2 = "\u2191 \u2193 Control Angle"
+		s3 = "Press 'F' to Fire"
+
+		instructions = [
+			Text(Point(100,65), f"{s1:<20}"), 
+			Text(Point(100,62), f"{s2:<20}"),
+			Text(Point(100,59), f"{s3:<20}"),]
+
+		for inst in instructions:
+			inst.setSize(16)
+			inst.setTextColor(self.foreground_color)
+			inst.draw(self.win)
+
+	def _createLegend(self):
+		sqs = [
+		Rectangle(Point(96,53), Point(98, 55)),
+		Rectangle(Point(96,50), Point(98, 52)),
+		Rectangle(Point(96,47), Point(98, 49)),
+		Rectangle(Point(96,44), Point(98, 46)),]
+
+		for i in range(len(sqs)):
+			sqs[i].setFill(self.target.getRingColors()[i])
+			sqs[i].setOutline(self.foreground_color)
+			sqs[i].draw(self.win)
+
+		labels = [
+				Text(Point(102,54),""),
+				Text(Point(102,51),""),
+				Text(Point(102,48),""),
+				Text(Point(102,45),""),
+				]
+		for i in range(len(labels)):
+			labels[i].setText(f"{f"{self.target.getRingScores()[i]} pts":<10}")
+			labels[i].setTextColor(self.foreground_color)
+			labels[i].draw(self.win)
 
 	def _updateShots(self):
 		# Updates live shots and their positions
@@ -168,10 +200,14 @@ class CannonballGame:
 		self.ammo.reset() 	   # Reset ammo
 		self.win.checkKey()    # Clear key presses		
 
-	def _createGrid(self, length, height, tick_interval, tick_size, color):
+class Grid:
+	def __init__(self, win, origin, length, height, tick_interval, tick_size, color):
 		# axes and axis labels
-		x_axis = Line(Point(0,0), Point(length,0))
-		y_axis = Line(Point(0,0), Point(0,height))
+		self.win = win
+		ox = origin.getX()
+		oy = origin.getY()
+		x_axis = Line(origin, Point(ox+length,oy))
+		y_axis = Line(origin, Point(ox,oy+height))
 		x_axis.setArrow("last")
 		y_axis.setArrow("last")
 		x_axis.setFill(color)
@@ -180,21 +216,27 @@ class CannonballGame:
 		y_axis.draw(self.win)
 
 		# ticks and tick labels
-		for x in range(tick_interval, length, tick_interval):
-				tick = Line(Point(x,-tick_size/2), Point(x,tick_size/2))
-				label = Text(Point(x,-tick_size), f"{x}")
-				tick.setFill(color)
-				label.setFill(color)
-				tick.draw(self.win)
-				label.draw(self.win)
+		x = ox
+		while x < ox+length:
+			tick = Line(Point(x,oy-tick_size/2), Point(x,oy+tick_size/2))
+			label = Text(Point(x,oy-tick_size), f"{x:.0f}")
+			tick.setFill(color)
+			label.setFill(color)
+			tick.draw(self.win)
+			label.draw(self.win)
+			x += tick_interval
 
-		for y in range(tick_interval, height, tick_interval):
-				tick = Line(Point(-tick_size/2,y), Point(tick_size/2,y))
-				label = Text(Point(-tick_size, y), f"{y}")
-				tick.setFill(color)
-				label.setFill(color)
-				tick.draw(self.win)
-				label.draw(self.win)
+		y = oy
+		while y < oy+height:
+			tick = Line(Point(ox-tick_size/2,y), Point(ox+tick_size/2,y))
+			label = Text(Point(ox-tick_size, y), f"{y:.0f}")
+			tick.setFill(color)
+			label.setFill(color)
+			tick.draw(self.win)
+			label.draw(self.win)
+			y += tick_interval
+
+
 
 class Cannonball:
 	# Cannonball projectile; keeps track of the score of the shot
@@ -277,6 +319,8 @@ class Target:
 
 	def __init__(self, win, radius, ring_scores, ring_colors):
 		self.win = win
+		self.ring_colors = ring_colors
+		self.ring_scores = ring_scores
 		self.rings = []
 		dummy = Point(0,0)
 		num_rings = len(ring_scores)
@@ -296,6 +340,12 @@ class Target:
 
 	def getRings(self):
 		return self.rings
+
+	def getRingColors(self):
+		return self.ring_colors
+
+	def getRingScores(self):
+		return self.ring_scores
 
 	def newTarget(self):
 		# Moves the target to a new random position

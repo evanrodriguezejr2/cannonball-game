@@ -1,6 +1,6 @@
 from utils.graphics import *
 
-class Button:
+class RectangularButton:
 	def __init__(self, win, center, width, height, label, background_color="black", outline_color="white", label_color="white"):
 		# Creates a rectangular button with specified position, dimensions, and label 
 		self.win = win
