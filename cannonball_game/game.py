@@ -21,6 +21,17 @@ class CannonballGame:
 		# grid
 		self._createGrid(length=105, height=55, tick_interval=10, tick_size=4, color=self.foreground_color)
 
+		# instructions
+		self.instructions = [
+			Text(Point(100,65), "\u2190 \u2192  Control Power"), 
+			Text(Point(100,62), "\u2191 \u2193 Control Angle"),
+			Text(Point(100,59), "Press 'F' to Fire"),]
+
+		for inst in self.instructions:
+			inst.setSize(16)
+			inst.setTextColor(self.foreground_color)
+			inst.draw(self.win)
+
 		# launch arrow
 		self.arrow = LaunchArrow(self.win, magnitude=20, color=self.foreground_color)
 
@@ -47,13 +58,14 @@ class CannonballGame:
 		# goal prompt
 		self.goal = 100
 		self.prompt = Text(Point(50,63), f"Get to {self.goal} points!")
-		self.prompt.setSize(16)
+		self.prompt.setSize(20)
 		self.prompt.setTextColor(self.foreground_color)
 		self.prompt.draw(self.win)
 
 		# outcome of game
 		self.outcome = Text(Point(50,40), "")
 		self.outcome.setSize(36)
+
 
 
 	def play(self):
