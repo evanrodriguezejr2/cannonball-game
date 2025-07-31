@@ -5,6 +5,8 @@ _Game in which the player shoots cannonballs at a moving target to score points.
 
 ### Languages Used
 - Python
+- Built on top of basic graphics library graphics.py
+(Zelle, John. Python Programming: An Introduction to Computer Science. 3rd ed., Franklin, Beedle & Associates, 2016.)
   
 ### Demo
 [Screenshot](images/cannonball.PNG)
