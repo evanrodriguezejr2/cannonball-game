@@ -61,6 +61,43 @@ class CannonballGame:
 		self.outcome = Text(Point(50,40), "")
 		self.outcome.setSize(36)
 
+	def _createInstructions(self):
+		s1 = "\u2190 \u2192  Control Power"
+		s2 = "\u2191 \u2193 Control Angle"
+		s3 = "Press 'F' to Fire"
+
+		instructions = [
+			Text(Point(100,65), f"{s1:<20}"), 
+			Text(Point(100,62), f"{s2:<20}"),
+			Text(Point(100,59), f"{s3:<20}"),]
+
+		for inst in instructions:
+			inst.setSize(16)
+			inst.setTextColor(self.foreground_color)
+			inst.draw(self.win)
+
+	def _createLegend(self):
+		sqs = [
+		Rectangle(Point(96,53), Point(98, 55)),
+		Rectangle(Point(96,50), Point(98, 52)),
+		Rectangle(Point(96,47), Point(98, 49)),
+		Rectangle(Point(96,44), Point(98, 46)),]
+
+		for i in range(len(sqs)):
+			sqs[i].setFill(self.target.getRingColors()[i])
+			sqs[i].setOutline(self.foreground_color)
+			sqs[i].draw(self.win)
+
+		labels = [
+				Text(Point(102,54),""),
+				Text(Point(102,51),""),
+				Text(Point(102,48),""),
+				Text(Point(102,45),""),
+				]
+		for i in range(len(labels)):
+			labels[i].setText(f"{f"{self.target.getRingScores()[i]} pts":<10}")
+			labels[i].setTextColor(self.foreground_color)
+			labels[i].draw(self.win)
 
 
 	def play(self):
@@ -100,7 +137,7 @@ class CannonballGame:
 		self._showOutcome()		# Shows outcome of game
 	
 		# Play again
-		play_again = Button(self.win, center=Point(50,30), width=10, height=5, label="Play Again", 
+		play_again = RectangularButton(self.win, center=Point(50,30), width=10, height=5, label="Play Again", 
 			background_color="blue4", outline_color=self.foreground_color, label_color=self.foreground_color)
 		while True:
 			pt = self.win.getMouse()
@@ -111,44 +148,6 @@ class CannonballGame:
 
 		self._resetGame()
 		self.play()
-
-	def _createInstructions(self):
-		s1 = "\u2190 \u2192  Control Power"
-		s2 = "\u2191 \u2193 Control Angle"
-		s3 = "Press 'F' to Fire"
-
-		instructions = [
-			Text(Point(100,65), f"{s1:<20}"), 
-			Text(Point(100,62), f"{s2:<20}"),
-			Text(Point(100,59), f"{s3:<20}"),]
-
-		for inst in instructions:
-			inst.setSize(16)
-			inst.setTextColor(self.foreground_color)
-			inst.draw(self.win)
-
-	def _createLegend(self):
-		sqs = [
-		Rectangle(Point(96,53), Point(98, 55)),
-		Rectangle(Point(96,50), Point(98, 52)),
-		Rectangle(Point(96,47), Point(98, 49)),
-		Rectangle(Point(96,44), Point(98, 46)),]
-
-		for i in range(len(sqs)):
-			sqs[i].setFill(self.target.getRingColors()[i])
-			sqs[i].setOutline(self.foreground_color)
-			sqs[i].draw(self.win)
-
-		labels = [
-				Text(Point(102,54),""),
-				Text(Point(102,51),""),
-				Text(Point(102,48),""),
-				Text(Point(102,45),""),
-				]
-		for i in range(len(labels)):
-			labels[i].setText(f"{f"{self.target.getRingScores()[i]} pts":<10}")
-			labels[i].setTextColor(self.foreground_color)
-			labels[i].draw(self.win)
 
 	def _updateShots(self):
 		# Updates live shots and their positions
